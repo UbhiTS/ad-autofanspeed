@@ -1,4 +1,4 @@
-# Auto 'Fan Speed' Controller :chicken:
+# Auto 'Fan Speed' Controller :chicken: <img src="https://poa5qzspd7.execute-api.us-east-1.amazonaws.com/live/hypercounterimage/1067a5bcbd5842f38c4aa8c5cba6a89f/counter.png" />
 
 Automatically control your room/ceiling fan speed using a temperature sensor (like a room thermostat, or a multi sensor)
 
