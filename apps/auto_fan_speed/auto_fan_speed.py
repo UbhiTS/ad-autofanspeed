@@ -105,10 +105,9 @@ class AutoFanSpeed(hass.Hass):
     elif room_temperature >= self.high + offset:
       fan_speed = "high"
     
-    if sun_above_horizon:
-      self.log(f"AUTO FAN SPEED: {str(room_temperature + offset)}/{fan_speed} (SUN OFFSET)")
-    else:
-      self.log(f"AUTO FAN SPEED: {str(room_temperature)}/{fan_speed}")
+    self.log(f"AUTO FAN SPEED: {str(room_temperature)}/{fan_speed}")
+    
+    if sun_above_horizon: self.log(f" (SUN OFFSET)")
       
     return fan_speed
 
