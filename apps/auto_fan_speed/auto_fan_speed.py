@@ -96,11 +96,11 @@ class AutoFanSpeed(hass.Hass):
     offset = self.offset if sun_above_horizon else 0
     fan_speed = "off"
     
-    if room_temperature <= self.low + offset:
+    if room_temperature < self.low + offset:
       fan_speed = "off"
-    elif room_temperature >= self.low + offset and room_temperature <= self.medium + offset:
+    elif room_temperature >= self.low + offset and room_temperature < self.medium + offset:
       fan_speed = "low"
-    elif room_temperature >= self.medium + offset and room_temperature <= self.high + offset:
+    elif room_temperature >= self.medium + offset and room_temperature < self.high + offset:
       fan_speed = "medium"
     elif room_temperature >= self.high + offset:
       fan_speed = "high"
