@@ -76,13 +76,17 @@ class AutoFanSpeed(hass.Hass):
 
   def temperature_change(self, entity, attribute, old, new, kwargs):
     
-    # if the room temp changes
-    # and if time is between start and end
+    # if the room temp changes and time is between start and end
     # then calculate and change fan speed
     
+    time_okay = False
     current_time = datetime.now().time()
-    time_okay = self.start <= current_time and current_time <= self.end
     
+    if (self.start < self.end):
+      time_okay = self.start <= current_time and current_time <= self.end
+    else:
+      time_okay = self.start <= current_time or current_time <= self.end
+
     if time_okay:
       room_temperature = float(new)
       fan_speed = self.get_target_fan_speed(room_temperature)
