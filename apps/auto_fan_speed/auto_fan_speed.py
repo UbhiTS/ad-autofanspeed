@@ -57,7 +57,7 @@ class AutoFanSpeed(hass.Hass):
 
   def configure(self, kwargs):
 
-    init_log = ["\nINIT\n"]
+    init_log = ["\nINIT - AUTO FAN SPEED\n"]
     
     init_log += [f"FAN           {self.fan}\n"]
     init_log += [f"TEMP SENSOR   {self.temp_sensor}\n"]
@@ -76,18 +76,7 @@ class AutoFanSpeed(hass.Hass):
 
   def temperature_change(self, entity, attribute, old, new, kwargs):
     
-    # if the room temp changes and time is between start and end
-    # then calculate and change fan speed
-    
-    time_okay = False
-    current_time = datetime.now().time()
-    
-    if (self.start < self.end):
-      time_okay = self.start <= current_time and current_time <= self.end
-    else:
-      time_okay = self.start <= current_time or current_time <= self.end
-
-    if time_okay:
+    if self.is_time_okay(self.start, self.end):
       room_temperature = float(new)
       fan_speed = self.get_target_fan_speed(room_temperature)
       self.call_service("fan/set_speed", entity_id = self.fan, speed = fan_speed)
@@ -119,3 +108,12 @@ class AutoFanSpeed(hass.Hass):
   def hvac_daily_shut_off(self, kwargs):
     self.call_service("fan/turn_off", entity_id = self.fan)
     self.log("FAN AUTO OFF")
+
+
+  def is_time_okay(self, start, end):
+    current_time = datetime.now().time()
+    if (start < end):
+      return start <= current_time and current_time <= end
+    else:
+      return start <= current_time or current_time <= end
+    
