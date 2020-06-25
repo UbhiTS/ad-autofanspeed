@@ -66,7 +66,7 @@ class AutoFanSpeed(hass.Hass):
     init_log += [f"SUN OFFSET    {self.offset}\n"]
     init_log += [f"TIME          {self.start} to {self.end}\n"]
 
-    self.listen_state(self.temperature_change, self.temp_sensor)
+    self.handle = self.listen_state(self.temperature_change, self.temp_sensor)
     
     if self.turn_off:
         self.run_daily(self.hvac_daily_shut_off, self.end)
@@ -109,8 +109,10 @@ class AutoFanSpeed(hass.Hass):
 
 
   def hvac_daily_shut_off(self, kwargs):
+    self.cancel_timer(self.handle)
     self.call_service("fan/turn_off", entity_id = self.fan)
     self.debug_log("FAN AUTO OFF")
+    self.run_in(self.configure, 1)
 
 
   def is_time_okay(self, start, end):
