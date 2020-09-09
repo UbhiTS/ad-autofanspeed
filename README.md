@@ -2,6 +2,8 @@
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 
+This is a new Test Line by Manjeet
+
 Automatically control your room/ceiling fan speed using a temperature sensor (like a room thermostat, or a multi sensor)
 
 Where we live, there is a huge difference between day:sunny: and night:first_quarter_moon_with_face: temperatures, sometimes more than 25F. At 10 in the night, the temperature could be 75F:fire:, but at 3 in the morning it could be as low as 50F:snowflake:. So when you sleep it's kinda hot and you need the fan on high, but then early morning you are cold. So you have to wake up, get up from your bed, walk to the switch and lower the fan speed thereby losing valuable sleep.
