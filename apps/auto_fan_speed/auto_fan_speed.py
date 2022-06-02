@@ -11,6 +11,7 @@ from datetime import datetime, time
 #   temp_sensor: sensor.thermostat_master_bedroom_temperature
 #   fan: fan.master_bedroom_fan
 #   sun: sun.sun
+#   override: input_boolean.fan_override
 #   speeds:
 #     low: 67
 #     medium: 69
@@ -40,6 +41,7 @@ class AutoFanSpeed(hass.Hass):
     self.start        = datetime.strptime("21:00:00", '%H:%M:%S').time()
     self.end          = datetime.strptime("09:30:00", '%H:%M:%S').time()
     self.turn_off     = False
+    self.override     = None
     
     # USER PREFERENCES
     if "speeds" in self.args:
@@ -53,6 +55,9 @@ class AutoFanSpeed(hass.Hass):
       self.end = datetime.strptime(self.args["time"]["end"], '%H:%M:%S').time() if "end" in self.args["time"] else self.end
       self.turn_off = bool(self.args["time"]["turn_off_at_end_time"]) if "turn_off_at_end_time" in self.args["time"] else self.turn_off
 
+    if "override" in self.args:
+      self.override = self.args["override"]
+  
     self.run_in(self.configure, 0)
 
 
@@ -65,7 +70,8 @@ class AutoFanSpeed(hass.Hass):
     init_log += [f"SPEEDS        OFF < {self.low} > LOW < {self.medium} > MEDIUM < {self.high} > HIGH\n"]
     init_log += [f"SUN OFFSET    {self.offset}\n"]
     init_log += [f"TIME          {self.start} to {self.end}\n"]
-
+    init_log += [f"OVERRIDE CTRL {self.override}\n"]
+    
     self.listen_state(self.temperature_change, self.temp_sensor)
     
     if self.turn_off:
@@ -78,13 +84,21 @@ class AutoFanSpeed(hass.Hass):
 
 
   def temperature_change(self, entity, attribute, old, new, kwargs):
-    
-    if self.is_time_okay(self.start, self.end):
-      room_temperature = float(new)
-      fan_speed_percentage = self.get_target_fan_speed(room_temperature)
-      self.call_service("fan/set_percentage", entity_id = self.fan, percentage = fan_speed_percentage)
-
-
+    if self.override != None:
+        if self.get_state(self.override) == "off":
+            if self.is_time_okay(self.start, self.end):
+                room_temperature = float(new)
+                fan_speed = self.get_target_fan_speed(room_temperature)
+                self.call_service("fan/set_speed", entity_id = self.fan, speed = fan_speed)
+        else:
+            self.call_service("fan/turn_off", entity_id = self.fan)
+            self.debug_log("FAN OVERRIDE ON")
+            
+    elif self.is_time_okay(self.start, self.end):
+        room_temperature = float(new)
+        fan_speed = self.get_target_fan_speed(room_temperature)
+        self.call_service("fan/set_speed", entity_id = self.fan, speed = fan_speed)
+        
   def get_target_fan_speed(self, room_temperature):
     
     # if sun is above horizon, then add offset

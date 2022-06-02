@@ -37,6 +37,7 @@ auto_fan_speed_master_bedroom:
   temp_sensor: sensor.thermostat_master_bedroom_temperature
   fan: fan.master_bedroom_fan
   sun: sun.sun
+  override: input_boolean.fan_override
   speeds:
     low: 67
     medium: 69
@@ -56,6 +57,7 @@ key | optional | type | description
 `temp_sensor` | **False** | sensor | the local room temperature sensor
 `fan` | **False** | fan | fan switch
 `sun` | **False** | sun | home assistant sun [sun](https://www.home-assistant.io/integrations/sun/) sensor
+`override` | True | entity | input_boolean or switch entity used to turn override control on or off
 `speeds\|low` | **False** | number | The fan will be switched "off" below this temperature and "low speed" between low and medium temperatures  
 `speeds\|medium` | **False** | number | The fan will be at "medium speed" between medium and high temperatures
 `speeds\|high` | **False** | number | The fan will be at "high speed" at or above this temperature
